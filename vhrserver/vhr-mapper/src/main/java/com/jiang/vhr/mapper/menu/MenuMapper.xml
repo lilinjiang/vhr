@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiang.vhr.mapper.menu.MenuMapper">
+
+    <resultMap id="BaseResultMap" type="com.jiang.vhr.model.Menu" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="path" property="path" jdbcType="VARCHAR" />
+        <result column="component" property="component" jdbcType="VARCHAR" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="iconCls" property="iconCls" jdbcType="VARCHAR" />
+        <result column="parentId" property="parentId" jdbcType="INTEGER" />
+        <result column="enabled" property="enabled" jdbcType="BIT" />
+        <association property="meta" javaType="com.jiang.vhr.model.Meta">
+            <result column="keepAlive" property="keepAlive" jdbcType="BIT" />
+            <result column="requireAuth" property="requireAuth" jdbcType="BIT" />
+        </association>
+    </resultMap>
+
+    <resultMap id="Menus2" type="com.jiang.vhr.model.Menu" extends="BaseResultMap">
+        <collection property="children" ofType="com.jiang.vhr.model.Menu">
+            <id column="id2" property="id" jdbcType="INTEGER" />
+            <result column="path2" property="path" jdbcType="VARCHAR" />
+            <result column="component2" property="component" jdbcType="VARCHAR" />
+            <result column="name2" property="name" jdbcType="VARCHAR" />
+            <result column="iconCls2" property="iconCls" jdbcType="VARCHAR" />
+            <result column="parentId2" property="parentId" jdbcType="INTEGER" />
+            <result column="enabled2" property="enabled" jdbcType="BIT" />
+            <association property="meta" javaType="com.jiang.vhr.model.Meta">
+                <result column="keepAlive2" property="keepAlive" jdbcType="BIT" />
+                <result column="requireAuth2" property="requireAuth" jdbcType="BIT" />
+            </association>
+        </collection>
+    </resultMap>
+
+    <resultMap id="MenuWithRole" type="com.jiang.vhr.model.Menu" extends="BaseResultMap">
+        <collection property="roles" ofType="com.jiang.vhr.model.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="MenuWithChildren" type="com.jiang.vhr.model.Menu" extends="BaseResultMap">
+        <id column="id1" property="id"/>
+        <result column="name1" property="name"/>
+        <collection property="children" ofType="com.jiang.vhr.model.Menu">
+            <id column="id2" property="id"/>
+            <result column="name2" property="name"/>
+            <collection property="children" ofType="com.jiang.vhr.model.Menu">
+                <id column="id3" property="id"/>
+                <result column="name3" property="name"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getMenusByHrId" resultMap="Menus2">
+        SELECT DISTINCT m1.*,m2.`id` AS id2,m2.`component` AS component2 ,m2.`enabled` AS enabled2,
+            m2.`iconCls` AS iconCls2,m2.`keepAlive` AS keepAlive2,m2.`name` AS name2,
+            m2.`parentId` AS parentId2, m2.`requireAuth` AS requireAuth2,m2.`path` AS path2
+        FROM menu m1
+        JOIN menu m2 ON m1.`id` = m2.`parentId`
+        JOIN hr_role hrr ON hrr.`hrid` = #{hrId}
+        JOIN menu_role mr ON mr.`rid` = hrr.`rid` AND mr.`mid` = m2.`id`
+        WHERE  m2.`enabled`=TRUE
+        ORDER BY m1.`id`,m2.`id`
+    </select>
+
+    <select id="getAllMenusWithRole"  resultMap="MenuWithRole">
+        SELECT m.*,r.`id` AS rid,r.`name`AS rname,r.`nameZh`AS rnameZh
+        FROM menu m
+        JOIN menu_role  mr ON mr.`mid` = m.`id`
+        JOIN role r ON r.`id` = mr.`rid`
+        ORDER BY m.`id`
+    </select>
+    
+    <select id="getAllMenus" resultMap="MenuWithChildren">
+        SELECT m1.`id` AS id1,m1.`name` AS name1,
+                m2.`id` AS id2,m2.`name` AS name2,
+                 m3.`id` AS id3,m3.`name` AS name3
+        FROM menu m1
+        JOIN menu m2 ON m1.`id` = m2.`parentId`
+        JOIN menu m3 ON m2.`id` = m3.`parentId`
+        WHERE m3.`enabled` = TRUE
+        ORDER BY m1.id,m2.id,m3.`id`
+    </select>
+    <select id="getMidsByRid" resultType="java.lang.Integer">
+        SELECT `mid`  FROM menu_role WHERE rid = #{rid}
+    </select>
+</mapper>

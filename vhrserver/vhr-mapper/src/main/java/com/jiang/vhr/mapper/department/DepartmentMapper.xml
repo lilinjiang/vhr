@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiang.vhr.mapper.department.DepartmentMapper">
+
+    <resultMap id="BaseResultMap" type="com.jiang.vhr.model.Department">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="parentId" property="parentId" jdbcType="INTEGER"/>
+        <result column="depPath" property="depPath" jdbcType="VARCHAR"/>
+        <result column="enabled" property="enabled" jdbcType="BIT"/>
+        <result column="isParent" property="isParent" jdbcType="BIT"/>
+    </resultMap>
+    <!--递归-->
+    <resultMap id="DepartmentWithChildren" type="com.jiang.vhr.model.Department" extends="BaseResultMap">
+        <collection property="children" ofType="com.jiang.vhr.model.Department"
+                    select="com.jiang.vhr.mapper.department.DepartmentMapper.getAllDepartmentsByParentId" column="id"/>
+    </resultMap>
+
+    <!--递归-->
+    <resultMap id="DepartmentWithParentDep" type="com.jiang.vhr.model.Department" extends="BaseResultMap">
+        <association property="parentDep" javaType="com.jiang.vhr.model.Department"
+            select="com.jiang.vhr.mapper.department.DepartmentMapper.getAllDepartmentsByParentId" column="id"/>
+    </resultMap>
+
+    <select id="getAllDepartmentsByParentId" resultMap="DepartmentWithChildren">
+        select * from department where parentId=#{pid};
+    </select>
+
+
+</mapper>

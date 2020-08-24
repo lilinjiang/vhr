@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiang.vhr.mapper.employee.EmployeeMapper">
+
+    <resultMap id="BaseResultMap" type="com.jiang.vhr.model.Employee">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="gender" property="gender" jdbcType="CHAR"/>
+        <result column="birthday" property="birthday" jdbcType="DATE"/>
+        <result column="idCard" property="idCard" jdbcType="CHAR"/>
+        <result column="wedlock" property="wedlock" jdbcType="CHAR"/>
+        <result column="nationId" property="nationId" jdbcType="INTEGER"/>
+        <result column="nativePlace" property="nativePlace" jdbcType="VARCHAR"/>
+        <result column="politicId" property="politicId" jdbcType="INTEGER"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="departmentId" property="departmentId" jdbcType="INTEGER"/>
+        <result column="jobLevelId" property="jobLevelId" jdbcType="INTEGER"/>
+        <result column="posId" property="posId" jdbcType="INTEGER"/>
+        <result column="engageForm" property="engageForm" jdbcType="VARCHAR"/>
+        <result column="tiptopDegree" property="tiptopDegree" jdbcType="CHAR"/>
+        <result column="specialty" property="specialty" jdbcType="VARCHAR"/>
+        <result column="school" property="school" jdbcType="VARCHAR"/>
+        <result column="beginDate" property="beginDate" jdbcType="DATE"/>
+        <result column="workState" property="workState" jdbcType="CHAR"/>
+        <result column="workID" property="workID" jdbcType="CHAR"/>
+        <result column="contractTerm" property="contractTerm" jdbcType="DOUBLE"/>
+        <result column="conversionTime" property="conversionTime" jdbcType="DATE"/>
+        <result column="notWorkDate" property="notWorkDate" jdbcType="DATE"/>
+        <result column="beginContract" property="beginContract" jdbcType="DATE"/>
+        <result column="endContract" property="endContract" jdbcType="DATE"/>
+        <result column="workAge" property="workAge" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <resultMap id="EmployeeWithSalary" type="com.jiang.vhr.model.Employee" extends="BaseResultMap">
+        <association property="salary" javaType="com.jiang.vhr.model.Salary">
+            <id column="sid" property="id" jdbcType="INTEGER"/>
+            <result column="sbasicSalary" property="basicSalary" jdbcType="INTEGER"/>
+            <result column="sbonus" property="bonus" jdbcType="INTEGER"/>
+            <result column="slunchSalary" property="lunchSalary" jdbcType="INTEGER"/>
+            <result column="strafficSalary" property="trafficSalary" jdbcType="INTEGER"/>
+            <result column="sallSalary" property="allSalary" jdbcType="INTEGER"/>
+            <result column="spensionBase" property="pensionBase" jdbcType="INTEGER"/>
+            <result column="spensionPer" property="pensionPer" jdbcType="REAL"/>
+            <result column="screateDate" property="createDate" jdbcType="TIMESTAMP"/>
+            <result column="smedicalBase" property="medicalBase" jdbcType="INTEGER"/>
+            <result column="smedicalPer" property="medicalPer" jdbcType="REAL"/>
+            <result column="saccumulationFundBase" property="accumulationFundBase" jdbcType="INTEGER"/>
+            <result column="saccumulationFundPer" property="accumulationFundPer" jdbcType="REAL"/>
+            <result column="sname" property="name" jdbcType="VARCHAR"/>
+        </association>
+        <association property="department" javaType="com.jiang.vhr.model.Department">
+            <result column="dname" property="name"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="AllEmployeeInfo" type="com.jiang.vhr.model.Employee" extends="BaseResultMap">
+        <association property="nation" javaType="com.jiang.vhr.model.Nation">
+            <id column="nid" property="id"/>
+            <result column="nname" property="name"/>
+        </association>
+        <association property="politicsstatus" javaType="com.jiang.vhr.model.Politicsstatus">
+            <id column="pid" property="id"/>
+            <result column="pname" property="name"/>
+        </association>
+        <association property="department" javaType="com.jiang.vhr.model.Department">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </association>
+        <association property="jobLevel" javaType="com.jiang.vhr.model.JobLevel">
+            <id column="jid" property="id"/>
+            <result column="jname" property="name"/>
+        </association>
+        <association property="position" javaType="com.jiang.vhr.model.Position">
+            <id column="posid" property="id"/>
+            <result column="posname" property="name"/>
+        </association>
+    </resultMap>
+
+    <insert id="addEmps">
+        insert into employee (name, gender,
+        birthday, idCard, wedlock, nationId,
+        nativePlace, politicId, email,
+        phone, address, departmentId,
+        jobLevelId, posId, engageForm,
+        tiptopDegree, specialty, school,
+        beginDate, workState, workID,
+        contractTerm, conversionTime, notWorkDate,
+        beginContract, endContract, workAge
+        )
+        values
+        <foreach collection="list" separator="," item="emp">
+            (#{emp.name,jdbcType=VARCHAR}, #{emp.gender,jdbcType=CHAR},
+            #{emp.birthday,jdbcType=DATE}, #{emp.idCard,jdbcType=CHAR}, #{emp.wedlock,jdbcType=CHAR},
+            #{emp.nationId,jdbcType=INTEGER},
+            #{emp.nativePlace,jdbcType=VARCHAR}, #{emp.politicId,jdbcType=INTEGER}, #{emp.email,jdbcType=VARCHAR},
+            #{emp.phone,jdbcType=VARCHAR}, #{emp.address,jdbcType=VARCHAR}, #{emp.departmentId,jdbcType=INTEGER},
+            #{emp.jobLevelId,jdbcType=INTEGER}, #{emp.posId,jdbcType=INTEGER}, #{emp.engageForm,jdbcType=VARCHAR},
+            #{emp.tiptopDegree,jdbcType=CHAR}, #{emp.specialty,jdbcType=VARCHAR}, #{emp.school,jdbcType=VARCHAR},
+            #{emp.beginDate,jdbcType=DATE}, #{emp.workState,jdbcType=CHAR}, #{emp.workID,jdbcType=CHAR},
+            #{emp.contractTerm,jdbcType=DOUBLE}, #{emp.conversionTime,jdbcType=DATE}, #{emp.notWorkDate,jdbcType=DATE},
+            #{emp.beginContract,jdbcType=DATE}, #{emp.endContract,jdbcType=DATE}, #{emp.workAge,jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="updateEmployeeSalaryById">
+        REPLACE INTO empsalary (eid,sid) VALUES(#{eid},#{sid})
+    </insert>
+
+    <select id="getEmployeeByPage" resultMap="AllEmployeeInfo">
+        SELECT e.*,
+            p.`id` AS pid,p.`name` AS pname,
+             n.`id` AS nid,n.`name` AS nname,
+              d.`id` AS did,d.`name` AS dname,
+               j.`id` AS jid,j.name AS jname,
+                pos.`id`AS posid,pos.`name`AS posname
+        FROM employee e
+        JOIN nation n ON e.`nationId` = n.`id`
+        JOIN `politicsstatus` p ON e.`politicId` = p.`id`
+        JOIN `department` d ON e.`departmentId` = d.`id`
+        JOIN `joblevel` j ON e.`jobLevelId` = j.`id`
+        JOIN `position` pos ON e.`posId` = pos.`id`
+        <where>
+            <if test="employee !=null">
+                <if test="employee.name != null and employee.name!=''">
+                    and e.name like concat('%',#{employee.name},'%')
+                </if>
+                <if test="employee.politicId !=null">
+                    and e.politicId =#{employee.politicId}
+                </if>
+                <if test="employee.nationId !=null">
+                    and e.nationId =#{employee.nationId}
+                </if>
+                <if test="employee.departmentId !=null">
+                    and e.departmentId =#{employee.departmentId}
+                </if>
+                <if test="employee.jobLevelId !=null">
+                    and e.jobLevelId =#{employee.jobLevelId}
+                </if>
+                <if test="employee.engageForm !=null and employee.engageForm!=''">
+                    and e.engageForm =#{employee.engageForm}
+                </if>
+                <if test="employee.posId !=null">
+                    and e.posId =#{employee.posId}
+                </if>
+            </if>
+            <if test="beginDateScope !=null">
+                and e.beginDate between #{beginDateScope[0]} and #{beginDateScope[1]}
+            </if>
+        </where>
+    </select>
+
+    <select id="maxWorkId" resultType="java.lang.Integer">
+        SELECT MAX(`workID`) FROM employee;
+    </select>
+
+    <select id="getEmployeeById" resultMap="AllEmployeeInfo">
+      SELECT e.*,
+            p.`id` AS pid,p.`name` AS pname,
+             n.`id` AS nid,n.`name` AS nname,
+              d.`id` AS did,d.`name` AS dname,
+               j.`id` AS jid,j.name AS jname,
+                pos.`id`AS posid,pos.`name`AS posname
+        FROM employee e
+        JOIN nation n ON e.`nationId` = n.`id`
+        JOIN `politicsstatus` p ON e.`politicId` = p.`id`
+        JOIN `department` d ON e.`departmentId` = d.`id`
+        JOIN `joblevel` j ON e.`jobLevelId` = j.`id`
+        JOIN `position` pos ON e.`posId` = pos.`id`
+        where e.id = #{id}
+    </select>
+
+    <select id="getEmployeeByPageWithSalary" resultMap="EmployeeWithSalary">
+        SELECT e.*
+            , d.`name` AS dname
+            , s.`id` AS sid, s.`accumulationFundBase` AS saccumulationFundBase, s.`accumulationFundPer` AS saccumulationFundPer
+            , s.`allSalary` AS sallSalary, s.`basicSalary` AS sbasicSalary, s.`bonus` AS sbonus, s.`createDate` AS screateDate, s.`lunchSalary` AS slunchSalary
+            , s.`medicalBase` AS smedicalBase, s.`medicalPer` AS smedicalPer, s.`name` AS sname, s.`pensionBase` AS spensionBase, s.`pensionPer` AS spensionPer
+            , s.`trafficSalary` AS strafficSalary
+        FROM employee e
+        LEFT JOIN empsalary es ON e.`id` = es.`eid`
+        LEFT JOIN salary s ON es.`sid` = s.`id`
+        LEFT JOIN department d ON e.`departmentId` = d.`id`
+        ORDER BY e.id
+    </select>
+</mapper>

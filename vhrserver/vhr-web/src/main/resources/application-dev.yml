@@ -1,0 +1,81 @@
+spring:
+  # 数据库配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://127.0.0.1:3307/vhr?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: root
+    druid:
+      # 连接池配置
+      # 初始化连接数
+      initial-size: 3
+      # 最小连接数
+      min-idle: 3
+      # 最大连接数
+      max-active: 20
+      # 获取连接时最大等待时间
+      max-wait: 3000
+      #检测连接是否有效的SQL
+      validation-query: SELECT 1
+      #validation-query: SELECT 1 FROM DUAL
+      #在进行borrowObject处理时，会对拿到的 连接进行校验-false
+      test-on-borrow: false
+      #在进行ruturnObject处理时，会对返回的连接进行校验-false
+      test-on-return: false
+      #开启Evict的定时校验，循环校验
+      test-while-idle: true
+      #只有Oracle/DB2/SQL Server之类支持游标的数据库才需要配置成true,MySQL不需要做PSCache
+      pool-prepared-statements: true
+      #如果是Oracle/DB2/SQL Server之类支持游标的数据库需要加上一下配置
+      max-pool-prepared-statement-per-connection-size: 20
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      #配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      #合并多个DruidDataSource的监控数据
+      use-global-data-source-stat: true
+      #配置监控统计拦截的filters,否则不显示数据 监控统计："stat",防SQL注入："wall",组合使用： "stat,wall"
+      filters: stat,wall,slf4j
+      # 配置web监控,默认配置也和下面相同(除用户名密码，enabled默认false外)，其他可以不配
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: root
+        allow: 127.0.0.1
+  # 消息中间件配置
+  rabbitmq:
+    host: 127.0.0.1
+    username: guest
+    password: guest
+    port: 5672
+
+  redis:
+    port: 6378
+    password: 19988201010k
+    host: 127.0.0.1
+    database: 1
+    lettuce:
+      pool:
+        max-active: 8
+        min-idle: 8
+        max-idle: 2
+        max-wait: 1000
+      shutdown-timeout: 100
+
+logging:
+  level:
+    com.jiang.vhr.mapper: debug
+server:
+  port: 8081
+
+
+pagehelper:
+  # 指定使用的数据库数据库
+  helperDialect: mysql
+  reasonable: true
+

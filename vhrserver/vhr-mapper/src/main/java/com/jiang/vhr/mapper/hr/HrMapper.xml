@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiang.vhr.mapper.hr.HrMapper">
+
+    <resultMap id="BaseResultMap" type="com.jiang.vhr.model.Hr">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="phone" property="phone" jdbcType="CHAR"/>
+        <result column="telephone" property="telephone" jdbcType="VARCHAR"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="enabled" property="enabled" jdbcType="BIT"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="userface" property="userface" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <resultMap id="HrWithRoles" type="com.jiang.vhr.model.Hr" extends="BaseResultMap">
+        <collection property="roles" ofType="com.jiang.vhr.model.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
+    <select id="loadUserByUsername" resultType="com.jiang.vhr.model.Hr">
+        SELECT * FROM `hr` WHERE username= #{username}
+    </select>
+
+    <select id="getAllHrs" resultMap="HrWithRoles">
+        SELECT hr.`id`,hr.name,hr.`phone`, hr.`telephone`,hr.`address`,hr.`enabled`,hr.`username`,hr.`userface`,hr.`remark`,
+                r.`id` AS rid,r.`name` AS rname,r.`nameZh` AS rnameZh
+        FROM hr
+        LEFT JOIN hr_role hrr ON hr.`id` = hrr.`hrid`
+        LEFT JOIN role r ON hrr.`rid` = r.`id`
+        WHERE hr.id !=#{hrId}
+        <if test="keywords != null and keywords != '' ">
+          and hr.name like concat('%',#{keywords},'%')
+        </if>
+        order by hr.id
+    </select>
+
+    <select id="getAllHrsExceptCurrentHr" resultMap="BaseResultMap">
+        select * from hr where id !=#{id};
+    </select>
+</mapper>

@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  mail:
+    username: 0000000@qq.com
+    password: 00000
+    host: smtp.qq.com
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+        debug: true
+
+  rabbitmq:
+    host: 127.0.0.1
+    username: guest
+    password: guest
+    port: 5672
