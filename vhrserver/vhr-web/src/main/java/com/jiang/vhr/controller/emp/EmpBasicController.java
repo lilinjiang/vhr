@@ -72,7 +72,6 @@ public class EmpBasicController {
      */
     @PostMapping("/")
     public RespUtil addEmp(@RequestBody Employee employee) {
-
         if (employeeService.addEmp(employee) == 1) {
             return RespUtil.ok("添加成功！");
         }
